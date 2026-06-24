@@ -1,6 +1,10 @@
 import Hero from "@/components/Hero";
 import Features from "@/components/Features";
 import HowItWorks from "@/components/HowItWorks";
+import PricingSection from "@/components/PricingSection";
+import Testimonials from "@/components/Testimonials";
+import FAQ from "@/components/FAQ";
+import FinalCTA from "@/components/FinalCTA";
 import Link from "next/link";
 
 export default function Home() {
@@ -15,16 +19,19 @@ export default function Home() {
               ResuMatch AI
             </span>
           </div>
-          <div className="flex items-center gap-6">
+          <div className="flex items-center gap-6 text-sm font-medium">
+            <Link href="#how-it-works" className="text-slate-600 hover:text-indigo-600 transition-colors hidden md:block">
+              How it works
+            </Link>
             <Link
-              href="/pricing"
-              className="text-sm font-medium text-slate-600 hover:text-indigo-600 transition-colors"
+              href="#pricing"
+              className="text-slate-600 hover:text-indigo-600 transition-colors"
             >
               Pricing
             </Link>
             <Link
               href="/dashboard"
-              className="rounded-lg bg-indigo-600 px-5 py-2.5 text-sm font-bold text-white hover:bg-indigo-700 transition-all shadow-md shadow-indigo-100"
+              className="rounded-lg bg-indigo-600 px-5 py-2.5 font-bold text-white hover:bg-indigo-700 transition-all shadow-md shadow-indigo-100"
             >
               Get Started
             </Link>
@@ -35,6 +42,10 @@ export default function Home() {
       <Hero />
       <HowItWorks />
       <Features />
+      <Testimonials />
+      <PricingSection />
+      <FAQ />
+      <FinalCTA />
 
       {/* Footer */}
       <footer className="border-t border-slate-100 py-12 bg-slate-50">

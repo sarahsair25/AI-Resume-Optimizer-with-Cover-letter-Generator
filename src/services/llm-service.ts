@@ -218,7 +218,8 @@ export async function rewriteBulletPoints(
 export async function generateCoverLetter(
   resumeText: string,
   jobDescription: string,
-  companyName: string
+  companyName: string,
+  tone?: string
 ): Promise<string> {
   const provider = getProvider();
 
@@ -226,13 +227,18 @@ export async function generateCoverLetter(
     return `[Cover letter generation requires an API key.]`;
   }
 
+  let prompt = COVER_PROMPT;
+  if (tone) {
+    prompt += ` Use a ${tone} tone.`;
+  }
+
   const content = `RESUME:\n${resumeText.slice(0, 2500)}\n\nJOB DESCRIPTION:\n${jobDescription.slice(0, 1500)}\n\nCOMPANY: ${companyName}`;
 
   try {
     if (provider === "openai") {
-      return await callOpenAI(COVER_PROMPT, content, 1000);
+      return await callOpenAI(prompt, content, 1000);
     } else {
-      return await callGemini(COVER_PROMPT, content, 1000);
+      return await callGemini(prompt, content, 1000);
     }
   } catch (err) {
     console.error("Cover letter generation failed:", err);

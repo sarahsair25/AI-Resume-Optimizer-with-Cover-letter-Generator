@@ -7,18 +7,19 @@ interface CoverLetterGeneratorProps {
 
 export const CoverLetterGenerator: React.FC<CoverLetterGeneratorProps> = ({ resumeText, jobDescription }) => {
   const [content, setContent] = useState('');
+  const [companyName, setCompanyName] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [copied, setCopied] = useState(false);
 
   const generate = async (tone?: string) => {
-    if (!resumeText || !jobDescription) return;
+    if (!resumeText || !jobDescription || !companyName) return;
     
     setIsLoading(true);
     try {
       const resp = await fetch("/api/cover-letter", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ resumeText, jobDescription, tone }),
+        body: JSON.stringify({ resumeText, jobDescription, companyName, tone }),
       });
       
       if (!resp.ok) throw new Error("Generation failed");
@@ -40,11 +41,22 @@ export const CoverLetterGenerator: React.FC<CoverLetterGeneratorProps> = ({ resu
   return (
     <div className="w-full bg-white rounded-2xl border border-slate-200 p-8 shadow-sm">
       <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
-        <div>
+        <div className="flex-1">
           <h3 className="text-lg font-bold text-slate-900 mb-1">AI Cover Letter Generator</h3>
-          <p className="text-sm text-slate-500">Tailored to your resume and the target job description.</p>
+          <p className="text-sm text-slate-500 mb-4">Tailored to your resume and the target job description.</p>
+          
+          <div className="max-w-xs">
+            <label className="block text-[10px] font-bold text-slate-400 uppercase mb-1 tracking-wider">Target Company</label>
+            <input 
+              type="text"
+              value={companyName}
+              onChange={(e) => setCompanyName(e.target.value)}
+              placeholder="e.g. Google, Stripe, Acme Inc."
+              className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 outline-none transition-all"
+            />
+          </div>
         </div>
-        <div className="flex gap-2">
+        <div className="flex gap-2 items-end">
           {content && (
             <div className="hidden md:flex bg-slate-100 p-1 rounded-lg">
               <button 

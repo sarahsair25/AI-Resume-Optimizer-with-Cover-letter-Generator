@@ -12,6 +12,7 @@
     "db:studio": "drizzle-kit studio"
   },
   "dependencies": {
+    "@clerk/nextjs": "^5.7.6",
     "@google/generative-ai": "^0.24.1",
     "better-sqlite3": "^12.11.1",
     "drizzle-orm": "^0.45.2",

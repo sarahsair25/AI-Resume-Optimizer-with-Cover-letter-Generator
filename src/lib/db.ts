@@ -208,4 +208,7 @@ export const memoryDb = {
   getAnalysis(id: string) {
     return memoryStores.analyses.get(id) ?? null;
   },
+  listAnalyses() {
+    return Array.from(memoryStores.analyses.values());
+  },
 };

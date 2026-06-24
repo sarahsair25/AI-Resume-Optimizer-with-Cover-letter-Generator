@@ -53,38 +53,15 @@ const plans = [
   },
 ];
 
-export default function Pricing() {
+export const PricingSection = () => {
   return (
-    <main className="min-h-screen bg-slate-50">
-      {/* Navigation */}
-      <header className="border-b border-slate-200 bg-white sticky top-0 z-50">
-        <nav className="container mx-auto flex items-center justify-between px-4 py-4">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center font-bold text-white text-sm">R</div>
-            <span className="text-xl font-bold text-slate-900">
-              ResuMatch AI
-            </span>
-          </div>
-          <div className="flex items-center gap-6">
-            <Link href="/" className="text-sm font-medium text-slate-600 hover:text-indigo-600 transition-colors">
-              Home
-            </Link>
-            <Link
-              href="/dashboard"
-              className="rounded-lg bg-indigo-600 px-5 py-2.5 text-sm font-bold text-white hover:bg-indigo-700 transition-all shadow-md shadow-indigo-100"
-            >
-              Get Started
-            </Link>
-          </div>
-        </nav>
-      </header>
-
-      <section className="container mx-auto px-4 py-24">
+    <section id="pricing" className="py-24 bg-slate-50">
+      <div className="container mx-auto px-4">
         <div className="mb-16 text-center max-w-2xl mx-auto">
-          <h1 className="text-sm font-bold text-indigo-600 uppercase tracking-widest mb-3">Pricing Plans</h1>
-          <h2 className="text-4xl lg:text-5xl font-extrabold text-slate-900 mb-6">
+          <h2 className="text-sm font-bold text-indigo-600 uppercase tracking-widest mb-3">Pricing Plans</h2>
+          <h3 className="text-4xl lg:text-5xl font-extrabold text-slate-900 mb-6">
             Invest in your career
-          </h2>
+          </h3>
           <p className="text-xl text-slate-600 leading-relaxed">
             Choose the plan that fits your job search needs. Get started for free and upgrade anytime.
           </p>
@@ -107,7 +84,7 @@ export default function Pricing() {
               )}
               
               <div className="mb-8">
-                <h3 className="text-xl font-bold text-slate-900 mb-2">{plan.name}</h3>
+                <h4 className="text-xl font-bold text-slate-900 mb-2">{plan.name}</h4>
                 <p className="text-sm text-slate-500">{plan.description}</p>
               </div>
 
@@ -145,30 +122,21 @@ export default function Pricing() {
               >
                 {plan.cta}
               </Link>
+              
+              {plan.price !== '0' && (
+                <div className="mt-4 flex items-center justify-center gap-2 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+                  <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
+                  </svg>
+                  Secure Payment via Stripe
+                </div>
+              )}
             </div>
           ))}
         </div>
-
-        <div className="mt-24 bg-white p-12 rounded-3xl border border-slate-100 shadow-sm text-center max-w-4xl mx-auto">
-          <h3 className="text-2xl font-bold text-slate-900 mb-4">Not sure which one to pick?</h3>
-          <p className="text-slate-600 mb-8">All users get their first match score for free. No credit card required.</p>
-          <Link href="/dashboard" className="text-indigo-600 font-bold hover:text-indigo-700 flex items-center justify-center gap-2">
-            Try a free analysis now
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
-            </svg>
-          </Link>
-        </div>
-      </section>
-      
-      {/* Footer */}
-      <footer className="border-t border-slate-200 py-12 bg-white">
-        <div className="container mx-auto px-4 text-center">
-          <div className="text-slate-400 text-xs">
-            &copy; {new Date().getFullYear()} ResuMatch AI. All rights reserved.
-          </div>
-        </div>
-      </footer>
-    </main>
+      </div>
+    </section>
   );
-}
+};
+
+export default PricingSection;

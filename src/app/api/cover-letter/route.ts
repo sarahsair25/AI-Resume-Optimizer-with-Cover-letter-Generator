@@ -10,7 +10,7 @@ import { generateCoverLetter } from "@/services/llm-service";
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { resumeText, jobDescription, companyName } = body;
+    const { resumeText, jobDescription, companyName, tone } = body;
 
     if (!resumeText || !jobDescription || !companyName) {
       return NextResponse.json(
@@ -22,7 +22,8 @@ export async function POST(request: NextRequest) {
     const content = await generateCoverLetter(
       resumeText,
       jobDescription,
-      companyName
+      companyName,
+      tone
     );
 
     return NextResponse.json({

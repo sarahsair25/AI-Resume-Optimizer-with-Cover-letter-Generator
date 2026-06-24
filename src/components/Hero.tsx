@@ -1,4 +1,5 @@
 import React from 'react';
+import Link from 'next/link';
 
 /**
  * Hero component for the landing page.
@@ -34,16 +35,29 @@ export const Hero: React.FC = () => {
           </p>
           
           <div className="flex flex-col sm:flex-row justify-center items-center gap-5">
-            <button className="w-full sm:w-auto px-10 py-5 bg-indigo-600 text-white font-bold rounded-xl shadow-xl shadow-indigo-200 hover:bg-indigo-700 hover:-translate-y-0.5 transition-all duration-200">
+            <Link 
+              href="/dashboard"
+              className="w-full sm:w-auto px-10 py-5 bg-indigo-600 text-white font-bold rounded-xl shadow-xl shadow-indigo-200 hover:bg-indigo-700 hover:-translate-y-0.5 transition-all duration-200"
+            >
               Optimize Your Resume for Free
-            </button>
-            <button className="w-full sm:w-auto px-10 py-5 bg-white text-slate-700 font-bold rounded-xl border border-slate-200 hover:border-indigo-600 hover:text-indigo-600 transition-all duration-200">
+            </Link>
+            <Link 
+              href="#how-it-works"
+              className="w-full sm:w-auto px-10 py-5 bg-white text-slate-700 font-bold rounded-xl border border-slate-200 hover:border-indigo-600 hover:text-indigo-600 transition-all duration-200"
+            >
               See How It Works
-            </button>
+            </Link>
           </div>
 
-          <div className="mt-16 flex items-center justify-center gap-8 opacity-50 grayscale">
-            <span className="font-bold text-xl text-slate-400">TRUSTED BY 10,000+ JOB SEEKERS</span>
+          <div className="mt-16 flex flex-col items-center gap-6">
+            <span className="font-bold text-xs text-slate-400 uppercase tracking-[0.2em]">Trusted by job seekers at</span>
+            <div className="flex flex-wrap justify-center items-center gap-8 lg:gap-12 opacity-40 grayscale contrast-125">
+              <div className="text-2xl font-black italic">Google</div>
+              <div className="text-2xl font-black italic">Amazon</div>
+              <div className="text-2xl font-black italic">Meta</div>
+              <div className="text-2xl font-black italic">Netflix</div>
+              <div className="text-2xl font-black italic">Apple</div>
+            </div>
           </div>
         </div>
       </div>
