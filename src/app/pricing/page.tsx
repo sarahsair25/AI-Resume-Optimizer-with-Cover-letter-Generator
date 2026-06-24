@@ -1,107 +1,174 @@
 import Link from "next/link";
 
+const plans = [
+  {
+    name: 'Free',
+    price: '0',
+    description: 'Perfect for a quick check-up.',
+    features: [
+      '1 resume analysis',
+      'Basic match score',
+      'Keyword suggestions',
+    ],
+    notIncluded: [
+      'AI Bullet point rewrites',
+      'Tailored cover letters',
+      'Priority processing',
+    ],
+    cta: 'Get Started',
+    href: '/dashboard',
+    highlight: false,
+  },
+  {
+    name: 'Premium',
+    price: '15',
+    description: 'Everything you need to land the job.',
+    features: [
+      'Unlimited analyses',
+      'AI Bullet point rewrites',
+      'Tailored cover letters',
+      'Missing skills detection',
+      'Formatting check',
+    ],
+    notIncluded: [],
+    cta: 'Start Free Trial',
+    href: '/dashboard',
+    highlight: true,
+  },
+  {
+    name: 'Pay-per-Credit',
+    price: '5',
+    unit: '/ea',
+    description: 'No commitment, just results.',
+    features: [
+      '1 full optimization',
+      'AI Bullet point rewrites',
+      'Tailored cover letter',
+      'Lifetime access to result',
+    ],
+    notIncluded: [],
+    cta: 'Buy Credit',
+    href: '/dashboard',
+    highlight: false,
+  },
+];
+
 export default function Pricing() {
   return (
-    <main className="min-h-screen bg-gray-50">
-      <header className="border-b border-gray-200 bg-white">
+    <main className="min-h-screen bg-slate-50">
+      {/* Navigation */}
+      <header className="border-b border-slate-200 bg-white sticky top-0 z-50">
         <nav className="container mx-auto flex items-center justify-between px-4 py-4">
-          <span className="text-xl font-bold text-primary-600">
-            ResuMatch AI
-          </span>
-          <div className="flex items-center gap-4">
-            <Link href="/" className="text-sm text-gray-600 hover:text-gray-900">
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center font-bold text-white text-sm">R</div>
+            <span className="text-xl font-bold text-slate-900">
+              ResuMatch AI
+            </span>
+          </div>
+          <div className="flex items-center gap-6">
+            <Link href="/" className="text-sm font-medium text-slate-600 hover:text-indigo-600 transition-colors">
               Home
             </Link>
             <Link
               href="/dashboard"
-              className="rounded-lg bg-primary-600 px-4 py-2 text-sm font-medium text-white hover:bg-primary-700"
+              className="rounded-lg bg-indigo-600 px-5 py-2.5 text-sm font-bold text-white hover:bg-indigo-700 transition-all shadow-md shadow-indigo-100"
             >
-              Get Started Free
+              Get Started
             </Link>
           </div>
         </nav>
       </header>
 
-      <section className="container mx-auto px-4 py-16">
-        <div className="mb-12 text-center">
-          <h1 className="mb-4 text-4xl font-bold text-gray-900">
-            Simple, Transparent Pricing
-          </h1>
-          <p className="text-lg text-gray-600">
-            Start free, upgrade when you need unlimited optimizations.
+      <section className="container mx-auto px-4 py-24">
+        <div className="mb-16 text-center max-w-2xl mx-auto">
+          <h1 className="text-sm font-bold text-indigo-600 uppercase tracking-widest mb-3">Pricing Plans</h1>
+          <h2 className="text-4xl lg:text-5xl font-extrabold text-slate-900 mb-6">
+            Invest in your career
+          </h2>
+          <p className="text-xl text-slate-600 leading-relaxed">
+            Choose the plan that fits your job search needs. Get started for free and upgrade anytime.
           </p>
         </div>
 
-        <div className="mx-auto grid max-w-4xl gap-8 md:grid-cols-3">
-          {/* Free */}
-          <div className="rounded-xl border border-gray-200 bg-white p-8">
-            <h3 className="mb-2 text-lg font-semibold text-gray-900">Free</h3>
-            <p className="mb-4 text-3xl font-bold text-gray-900">$0</p>
-            <ul className="mb-8 space-y-3 text-sm text-gray-600">
-              <li className="flex items-center gap-2">✅ 1 resume analysis</li>
-              <li className="flex items-center gap-2">✅ Basic match score</li>
-              <li className="flex items-center gap-2">✅ Keyword suggestions</li>
-              <li className="flex items-center gap-2 text-gray-400">❌ Bullet rewrites</li>
-              <li className="flex items-center gap-2 text-gray-400">❌ Cover letters</li>
-            </ul>
-            <Link
-              href="/dashboard"
-              className="block rounded-lg border border-gray-300 px-6 py-3 text-center text-sm font-medium text-gray-700 hover:bg-gray-50"
+        <div className="grid lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+          {plans.map((plan) => (
+            <div 
+              key={plan.name} 
+              className={`relative flex flex-col p-8 bg-white rounded-3xl border transition-all duration-300 ${
+                plan.highlight 
+                  ? 'border-indigo-600 shadow-xl shadow-indigo-100 scale-105 z-10' 
+                  : 'border-slate-200 hover:border-indigo-300 shadow-sm'
+              }`}
             >
-              Get Started
-            </Link>
-          </div>
+              {plan.highlight && (
+                <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-indigo-600 text-white text-[10px] font-bold px-4 py-1 rounded-full uppercase tracking-widest">
+                  Most Popular
+                </div>
+              )}
+              
+              <div className="mb-8">
+                <h3 className="text-xl font-bold text-slate-900 mb-2">{plan.name}</h3>
+                <p className="text-sm text-slate-500">{plan.description}</p>
+              </div>
 
-          {/* Premium (Recommended) */}
-          <div className="rounded-xl border-2 border-primary-500 bg-white p-8 shadow-lg">
-            <div className="mb-2 inline-block rounded-full bg-primary-100 px-3 py-1 text-xs font-semibold text-primary-700">
-              RECOMMENDED
+              <div className="flex items-baseline gap-1 mb-8">
+                <span className="text-5xl font-extrabold text-slate-900">${plan.price}</span>
+                <span className="text-slate-500 font-medium">{plan.unit || '/mo'}</span>
+              </div>
+
+              <ul className="flex-1 space-y-4 mb-10 text-sm">
+                {plan.features.map((feature) => (
+                  <li key={feature} className="flex items-center gap-3 text-slate-700">
+                    <svg className="w-5 h-5 text-emerald-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M5 13l4 4L19 7" />
+                    </svg>
+                    {feature}
+                  </li>
+                ))}
+                {plan.notIncluded.map((feature) => (
+                  <li key={feature} className="flex items-center gap-3 text-slate-400">
+                    <svg className="w-5 h-5 text-slate-300 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                    {feature}
+                  </li>
+                ))}
+              </ul>
+
+              <Link
+                href={plan.href}
+                className={`block w-full py-4 text-center font-bold rounded-xl transition-all ${
+                  plan.highlight
+                    ? 'bg-indigo-600 text-white hover:bg-indigo-700 shadow-lg shadow-indigo-200'
+                    : 'bg-white border border-slate-200 text-slate-700 hover:border-indigo-600 hover:text-indigo-600'
+                }`}
+              >
+                {plan.cta}
+              </Link>
             </div>
-            <h3 className="mb-2 text-lg font-semibold text-gray-900">
-              Premium
-            </h3>
-            <p className="mb-4 text-3xl font-bold text-gray-900">
-              $15<span className="text-base font-normal text-gray-500">/mo</span>
-            </p>
-            <ul className="mb-8 space-y-3 text-sm text-gray-600">
-              <li className="flex items-center gap-2">✅ Unlimited analyses</li>
-              <li className="flex items-center gap-2">✅ Full match score + gaps</li>
-              <li className="flex items-center gap-2">✅ AI bullet rewrites</li>
-              <li className="flex items-center gap-2">✅ AI cover letters</li>
-              <li className="flex items-center gap-2">✅ Missing skills detection</li>
-            </ul>
-            <Link
-              href="/dashboard"
-              className="block rounded-lg bg-primary-600 px-6 py-3 text-center text-sm font-medium text-white hover:bg-primary-700"
-            >
-              Subscribe — Coming Soon
-            </Link>
-          </div>
+          ))}
+        </div>
 
-          {/* Pay-per-Credit */}
-          <div className="rounded-xl border border-gray-200 bg-white p-8">
-            <h3 className="mb-2 text-lg font-semibold text-gray-900">
-              Pay-per-Credit
-            </h3>
-            <p className="mb-4 text-3xl font-bold text-gray-900">
-              $5<span className="text-base font-normal text-gray-500">/ea</span>
-            </p>
-            <ul className="mb-8 space-y-3 text-sm text-gray-600">
-              <li className="flex items-center gap-2">✅ 1 full optimization</li>
-              <li className="flex items-center gap-2">✅ Match score + gaps</li>
-              <li className="flex items-center gap-2">✅ Bullet rewrites</li>
-              <li className="flex items-center gap-2">✅ Cover letter</li>
-              <li className="flex items-center gap-2">✅ No subscription</li>
-            </ul>
-            <Link
-              href="/dashboard"
-              className="block rounded-lg border border-gray-300 px-6 py-3 text-center text-sm font-medium text-gray-700 hover:bg-gray-50"
-            >
-              Buy Credits — Coming Soon
-            </Link>
-          </div>
+        <div className="mt-24 bg-white p-12 rounded-3xl border border-slate-100 shadow-sm text-center max-w-4xl mx-auto">
+          <h3 className="text-2xl font-bold text-slate-900 mb-4">Not sure which one to pick?</h3>
+          <p className="text-slate-600 mb-8">All users get their first match score for free. No credit card required.</p>
+          <Link href="/dashboard" className="text-indigo-600 font-bold hover:text-indigo-700 flex items-center justify-center gap-2">
+            Try a free analysis now
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+            </svg>
+          </Link>
         </div>
       </section>
+      
+      {/* Footer */}
+      <footer className="border-t border-slate-200 py-12 bg-white">
+        <div className="container mx-auto px-4 text-center">
+          <div className="text-slate-400 text-xs">
+            &copy; {new Date().getFullYear()} ResuMatch AI. All rights reserved.
+          </div>
+        </div>
+      </footer>
     </main>
   );
 }

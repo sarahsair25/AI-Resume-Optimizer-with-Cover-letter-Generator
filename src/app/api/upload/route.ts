@@ -18,7 +18,6 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "No file provided" }, { status: 400 });
     }
 
-    // Validate file type
     const ext = file.name.split(".").pop()?.toLowerCase() ?? "";
     if (!APP_CONFIG.ALLOWED_FILE_TYPES.includes(ext as any)) {
       return NextResponse.json(
@@ -27,7 +26,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Validate file size
     if (file.size > APP_CONFIG.MAX_FILE_SIZE) {
       return NextResponse.json(
         { error: `File too large. Maximum size: ${APP_CONFIG.MAX_FILE_SIZE / (1024 * 1024)}MB` },
@@ -35,7 +33,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Convert File to Buffer and save
     const buffer = Buffer.from(await file.arrayBuffer());
     const stored = await saveFile(buffer, file.name, ext);
 

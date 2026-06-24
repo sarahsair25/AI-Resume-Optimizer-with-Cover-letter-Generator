@@ -2,6 +2,7 @@
  * POST /api/parse
  * 
  * Parses an uploaded resume file and extracts structured text.
+ * Supports PDF (via pdf-parse), DOCX (via mammoth), and plain text.
  */
 
 import { NextRequest, NextResponse } from "next/server";
@@ -27,13 +28,8 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Read file from disk
     const buffer = await readFile(filePath);
-
-    // Extract text based on file type
     const rawText = await extractTextFromFile(buffer, fileType);
-
-    // Parse into structured sections
     const parsed = parseResumeText(rawText);
 
     return NextResponse.json({

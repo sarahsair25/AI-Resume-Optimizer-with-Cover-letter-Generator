@@ -1,46 +1,51 @@
+import { sqliteTable, text, real } from "drizzle-orm/sqlite-core";
+
 /**
- * Database Schema Definition for ResuMatch AI
- * 
- * This schema defines the database tables for the application.
- * In Phase 1 (MVP), data is stored in-memory or flat files.
- * This schema serves as the target for migration to SQLite/Drizzle.
+ * Database schema for ResuMatch AI
+ * Uses SQLite via Drizzle ORM with better-sqlite3 driver
  */
 
-export interface User {
-  id: string;
-  email: string;
-  name: string | null;
-  plan: "free" | "premium" | "pay-per-credit";
-  creditsRemaining: number;
-  createdAt: string;
-  updatedAt: string;
-}
+export const users = sqliteTable("users", {
+  id: text("id").primaryKey(),
+  email: text("email").notNull().unique(),
+  name: text("name"),
+  plan: text("plan").notNull().default("free"),
+  creditsRemaining: text("credits_remaining").notNull().default("5"),
+  createdAt: text("created_at").notNull().default("datetime('now')"),
+  updatedAt: text("updated_at").notNull().default("datetime('now')"),
+});
 
-export interface Resume {
-  id: string;
-  userId: string;
-  filename: string;
-  originalText: string;
-  filePath: string;
-  fileType: "pdf" | "docx" | "txt";
-  createdAt: string;
-}
+export const resumes = sqliteTable("resumes", {
+  id: text("id").primaryKey(),
+  userId: text("user_id").references(() => users.id),
+  filename: text("filename").notNull(),
+  originalText: text("original_text").notNull(),
+  filePath: text("file_path").notNull(),
+  fileType: text("file_type", { enum: ["pdf", "docx", "txt"] }).notNull(),
+  createdAt: text("created_at").notNull().default("datetime('now')"),
+});
 
-export interface Analysis {
-  id: string;
-  resumeId: string;
-  jobDescription: string;
-  matchScore: number;
-  matchedKeywords: string; // JSON array
-  missingKeywords: string; // JSON array
-  suggestions: string | null; // JSON array
-  createdAt: string;
-}
+export const analyses = sqliteTable("analyses", {
+  id: text("id").primaryKey(),
+  resumeId: text("resume_id").references(() => resumes.id),
+  jobDescription: text("job_description").notNull(),
+  score: real("score").notNull(),
+  keywordMatch: real("keyword_match").notNull(),
+  relevance: real("relevance").notNull(),
+  impact: real("impact").notNull(),
+  formatting: real("formatting").notNull(),
+  matchedKeywords: text("matched_keywords").notNull(), // JSON string array
+  missingKeywords: text("missing_keywords").notNull(), // JSON string array
+  missingSkills: text("missing_skills").notNull(), // JSON array of {skill, reason}
+  bulletRewrites: text("bullet_rewrites"), // JSON array of {original, improved, why}
+  summary: text("summary"),
+  createdAt: text("created_at").notNull().default("datetime('now')"),
+});
 
-export interface CoverLetter {
-  id: string;
-  resumeId: string;
-  jobDescription: string;
-  content: string;
-  createdAt: string;
-}
+export const coverLetters = sqliteTable("cover_letters", {
+  id: text("id").primaryKey(),
+  resumeId: text("resume_id").references(() => resumes.id),
+  jobDescription: text("job_description").notNull(),
+  content: text("content").notNull(),
+  createdAt: text("created_at").notNull().default("datetime('now')"),
+});

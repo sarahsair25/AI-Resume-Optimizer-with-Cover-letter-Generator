@@ -1,17 +1,31 @@
 /**
  * POST /api/match
  * 
- * Performs ATS keyword matching between a resume and job description.
- * Returns match score, matched/missing keywords, and suggestions.
+ * Full ATS resume analysis: match score, keyword gaps, skill detection,
+ * bullet rewrites, and summary. Uses AI if available, falls back to local NLP.
+ * Persists results to the database.
+ * 
+ * Expected response shape (owner-code.jsx compatible):
+ * {
+ *   analysisId: string,
+ *   score, scoreBreakdown: { keywordMatch, relevance, impact, formatting },
+ *   matchedKeywords: string[],
+ *   missingKeywords: string[],
+ *   missingSkills: { skill, reason }[],
+ *   bulletRewrites: { original, improved, why }[],
+ *   summary: string
+ * }
  */
 
 import { NextRequest, NextResponse } from "next/server";
-import { calculateMatch } from "@/services/ats-matcher";
+import { analyzeResume } from "@/services/llm-service";
+import { fullAnalysis } from "@/services/ats-matcher";
+import { saveAnalysis, memoryDb } from "@/lib/db";
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { resumeText, jobDescription } = body;
+    const { resumeText, jobDescription, resumeId } = body;
 
     if (!resumeText || !jobDescription) {
       return NextResponse.json(
@@ -20,42 +34,75 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    if (resumeText.length < 10) {
+    if (resumeText.length < 10 || jobDescription.length < 10) {
       return NextResponse.json(
-        { error: "Resume text is too short" },
+        { error: "Both resume and job description must be at least 10 characters" },
         { status: 400 }
       );
     }
 
-    if (jobDescription.length < 10) {
-      return NextResponse.json(
-        { error: "Job description is too short" },
-        { status: 400 }
-      );
-    }
+    // Try AI-powered analysis first, fall back to local NLP
+    const result = await analyzeResume({
+      resumeText: resumeText.slice(0, 3000),
+      jobDescription: jobDescription.slice(0, 2000),
+    });
 
-    // Calculate match
-    const result = calculateMatch(resumeText, jobDescription);
+    // Save to database
+    const analysisId = saveAnalysis({
+      resumeId: resumeId ?? "anonymous",
+      jobDescription: jobDescription.slice(0, 2000),
+      score: result.score,
+      scoreBreakdown: result.scoreBreakdown,
+      matchedKeywords: result.matchedKeywords,
+      missingKeywords: result.missingKeywords,
+      missingSkills: result.missingSkills,
+      bulletRewrites: result.bulletRewrites,
+      summary: result.summary,
+    });
+
+    // Fallback: save to in-memory store
+    const fallbackId = analysisId ?? memoryDb.saveAnalysis({
+      resumeId: resumeId ?? "anonymous",
+      jobDescription: jobDescription.slice(0, 2000),
+      score: result.score,
+      scoreBreakdown: result.scoreBreakdown,
+      matchedKeywords: result.matchedKeywords,
+      missingKeywords: result.missingKeywords,
+      missingSkills: result.missingSkills,
+      bulletRewrites: result.bulletRewrites,
+      summary: result.summary,
+    });
 
     return NextResponse.json({
-      matchScore: result.matchScore,
-      matchedKeywords: result.matchedKeywords.map((k) => ({
-        term: k.term,
-        category: k.category,
-        weight: k.weight,
-      })),
-      missingKeywords: result.missingKeywords.map((k) => ({
-        term: k.term,
-        category: k.category,
-        importance: k.importance,
-      })),
-      suggestions: result.suggestions,
+      analysisId: analysisId ?? fallbackId,
+      ...result,
     });
   } catch (error) {
     console.error("Match error:", error);
-    return NextResponse.json(
-      { error: "Failed to calculate match" },
-      { status: 500 }
-    );
+
+    // If AI fails, try local analysis as last resort
+    try {
+      const body = await request.clone().json();
+      const local = fullAnalysis(body.resumeText || "", body.jobDescription || "");
+
+      const analysisId = memoryDb.saveAnalysis({
+        resumeId: body.resumeId ?? "anonymous",
+        jobDescription: (body.jobDescription ?? "").slice(0, 2000),
+        score: local.score,
+        scoreBreakdown: local.scoreBreakdown,
+        matchedKeywords: local.matchedKeywords,
+        missingKeywords: local.missingKeywords,
+        missingSkills: local.missingSkills,
+        bulletRewrites: local.bulletRewrites,
+        summary: local.summary,
+      });
+
+      return NextResponse.json({ analysisId, ...local });
+    } catch {
+      return NextResponse.json(
+        { error: "Failed to calculate match" },
+        { status: 500 }
+      );
+    }
   }
 }

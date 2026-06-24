@@ -1,20 +1,22 @@
 /**
  * GET /api/score/[id]
  * 
- * Retrieves a previously computed match score analysis.
+ * Retrieves a previously computed match score analysis from the database.
  */
 
 import { NextRequest, NextResponse } from "next/server";
-
-// In-memory store for analyses (would be DB in production)
-const analysisStore = new Map<string, any>();
+import { getAnalysis, memoryDb } from "@/lib/db";
 
 export async function GET(
   _request: NextRequest,
   { params }: { params: { id: string } }
 ) {
   try {
-    const analysis = analysisStore.get(params.id);
+    // Try database first, fall back to in-memory
+    let analysis = getAnalysis(params.id);
+    if (!analysis) {
+      analysis = memoryDb.getAnalysis(params.id);
+    }
 
     if (!analysis) {
       return NextResponse.json(
@@ -31,9 +33,4 @@ export async function GET(
       { status: 500 }
     );
   }
-}
-
-// Helper to store analyses (used by match route)
-export function storeAnalysis(id: string, data: any): void {
-  analysisStore.set(id, data);
 }

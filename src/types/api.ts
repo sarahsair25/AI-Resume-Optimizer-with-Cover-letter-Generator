@@ -1,26 +1,34 @@
 export interface MatchResult {
-  analysisId: string;
-  matchScore: number;
+  analysisId?: string;
+  score: number;
+  /** @deprecated Use score instead */
+  matchScore?: number;
+  scoreBreakdown: {
+    keywordMatch: number;
+    relevance: number;
+    impact: number;
+    formatting: number;
+  };
   matchedKeywords: string[];
   missingKeywords: string[];
-  suggestions: string[];
+  missingSkills: { skill: string; reason: string }[];
+  bulletRewrites: BulletRewrite[];
+  summary: string;
+  /** @deprecated Use summary instead */
+  suggestions?: string[];
 }
 
-export interface RewriteResult {
-  rewrites: BulletRewrite[];
-}
+// Re-export for backward compatibility
+export type AnalysisResponse = MatchResult;
 
 export interface BulletRewrite {
   original: string;
   improved: string;
-  reasoning: string;
+  why: string;
 }
 
-export interface AnalysisResponse {
-  matchScore: number;
-  matchedKeywords: string[];
-  missingKeywords: string[];
-  suggestions: string[];
+export interface RewriteResult {
+  rewrites: BulletRewrite[];
 }
 
 export interface UploadResponse {
