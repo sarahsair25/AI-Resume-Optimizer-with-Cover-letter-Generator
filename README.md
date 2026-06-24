@@ -1,36 +1,98 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+<img width="951" height="894" alt="resumeAi cover letter" src="https://github.com/user-attachments/assets/9ed16eed-0f19-4c9e-98cf-ccd8fb9a609e" />
+
+# 🎯 AI Resume Optimizer and Cover letter
+
+> **Make your resume fit the job.**
+> Paste your resume and a job description — get a match score, keyword gaps, stronger bullets, missing skills, a rewritten resume, and a tailored cover letter. All in seconds.
+
+![Made with React](https://img.shields.io/badge/Made%20with-React-61DAFB?style=flat&logo=react)
+![Powered by Claude](https://img.shields.io/badge/Powered%20by-Claude%20AI-14B8A6?style=flat)
+![Speed Optimized](https://img.shields.io/badge/Speed-Optimized-F59E0B?style=flat)
+![License: MIT](https://img.shields.io/badge/License-MIT-green?style=flat)
+
+---
+
+## Features
+
+### Resume Optimizer
+- **Upload or paste your resume** — supports PDF and plain text
+- **ATS keyword matching** — instantly see what's missing vs. what you have
+- **Match score (0–100)** — broken down across 4 categories: keyword match, relevance, impact, and formatting
+- **Bullet point rewrites** — AI rewrites weak bullets into strong, impact-driven ones
+- **Missing skills detection** — flags qualifications you haven't highlighted
+- **One-click auto-apply** — applies all improvements directly to your resume
+- **Copy to clipboard** — grab your updated resume instantly
+
+### Cover Letter Generator
+- Generates a tailored, professional cover letter from your resume + job description
+- Fully editable after generation
+- Regenerate anytime with one click
+- Copy to clipboard instantly
+
+### Speed Optimized
+- PDF extraction powered by **Claude Haiku** for near-instant parsing
+- TXT files load with **zero API calls**
+- Input trimming keeps token usage low and responses fast
+- Live loading indicators so you always know what's happening
+
+---
 
 ## Getting Started
 
-First, run the development server:
+This app runs entirely in the browser using the [Anthropic Claude API](https://www.anthropic.com).
+
+### Prerequisites
+- An Anthropic API key ([get one here](https://console.anthropic.com))
+
+### Run locally
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone https://github.com/sarahsair25/ai-resume-optimizer.git
+cd ai-resume-optimizer
+npm install
+npm start
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open `http://localhost:3000` in your browser.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Tech Stack
 
-## Learn More
+| Layer | Technology |
+|---|---|
+| Frontend | React / Next.js 14, Tailwind CSS |
+| AI Analysis | Claude Sonnet / GPT-4o-mini / Gemini |
+| PDF Parsing | pdf-parse / Claude Haiku |
+| Cover Letter | Claude Sonnet / GPT-4o-mini / Gemini |
+| Database | SQLite via Drizzle ORM |
+| Authentication | Clerk |
+| Hosting | Vercel |
 
-To learn more about Next.js, take a look at the following resources:
+---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## How It Works
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```
+User pastes resume + job description
+        ↓
+AI analyzes ATS keyword match
+        ↓
+Score + gaps + rewrites returned in <10s
+        ↓
+User applies changes with one click
+        ↓
+Updated resume + cover letter ready to send
+```
 
-## Deploy on Vercel
+---
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Contributing
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Pull requests are welcome! For major changes, please open an issue first to discuss what you'd like to change.
+
+---
+
+## License
+
+MIT © 2026
