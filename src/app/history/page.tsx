@@ -2,9 +2,15 @@
  * History page — shows past resume analyses and cover letters for the current user.
  */
 
+import type { Metadata } from "next";
 import { auth, currentUser } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import Link from "next/link";
+
+export const metadata: Metadata = {
+  title: "Analysis History",
+  description: "View your past resume analyses and cover letters.",
+};
 
 export default async function HistoryPage() {
   const session = await auth();
