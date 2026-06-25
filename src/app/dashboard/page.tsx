@@ -9,6 +9,8 @@ import BulletRewriter from "@/components/BulletRewriter";
 import CoverLetterGenerator from "@/components/CoverLetterGenerator";
 import { AnalysisResponse, UploadResponse, ParseResponse } from "@/types/api";
 
+import TestimonialRequest from "@/components/TestimonialRequest";
+
 export default function Dashboard() {
   const [activeTab, setActiveTab] = useState<"optimizer" | "cover-letter">("optimizer");
   const [resumeBullets, setResumeBullets] = useState<string[]>([]);
@@ -248,6 +250,10 @@ export default function Dashboard() {
               <CoverLetterGenerator resumeText={resumeText} jobDescription={jobDescription} />
             </div>
           )}
+
+          <div className="max-w-4xl mx-auto pt-12 pb-8">
+            <TestimonialRequest />
+          </div>
         </div>
       )}
     </DashboardLayout>

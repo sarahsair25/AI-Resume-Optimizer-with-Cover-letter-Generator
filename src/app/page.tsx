@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Hero from "@/components/Hero";
 import Features from "@/components/Features";
 import HowItWorks from "@/components/HowItWorks";
@@ -6,6 +7,17 @@ import Testimonials from "@/components/Testimonials";
 import FAQ from "@/components/FAQ";
 import FinalCTA from "@/components/FinalCTA";
 import Link from "next/link";
+
+export const metadata: Metadata = {
+  title: "ResuMatch AI — Optimize Your Resume for ATS",
+  description:
+    "Bypass Applicant Tracking Systems with data-driven resume optimization and AI-tailored cover letters. Get more interviews, faster.",
+  openGraph: {
+    title: "ResuMatch AI — Optimize Your Resume for ATS",
+    description:
+      "Bypass Applicant Tracking Systems with data-driven resume optimization and AI-tailored cover letters.",
+  },
+};
 
 export default function Home() {
   return (

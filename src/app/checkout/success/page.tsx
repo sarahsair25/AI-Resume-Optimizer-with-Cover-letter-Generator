@@ -1,4 +1,10 @@
+import type { Metadata } from "next";
 import Link from "next/link";
+
+export const metadata: Metadata = {
+  title: "Payment Successful",
+  description: "Your payment was successful and your plan has been activated.",
+};
 
 export default function CheckoutSuccessPage({
   searchParams,

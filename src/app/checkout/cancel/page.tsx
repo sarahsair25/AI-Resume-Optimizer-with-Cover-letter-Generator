@@ -1,4 +1,10 @@
+import type { Metadata } from "next";
 import Link from "next/link";
+
+export const metadata: Metadata = {
+  title: "Payment Canceled",
+  description: "Your payment was not processed. You can try again anytime.",
+};
 
 export default function CheckoutCancelPage() {
   return (
