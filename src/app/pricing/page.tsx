@@ -1,59 +1,108 @@
+"use client";
+
+import { useState } from "react";
 import Link from "next/link";
+import { useUser } from "@clerk/nextjs";
+import { useRouter } from "next/navigation";
 
 const plans = [
   {
-    name: 'Freemium',
-    price: '0',
-    description: 'Perfect for a quick check-up.',
+    id: "freemium",
+    name: "Freemium",
+    price: "0",
+    description: "Perfect for a quick check-up.",
     features: [
-      '1 resume analysis',
-      'Basic match score',
-      'Keyword suggestions',
+      "1 resume analysis",
+      "Basic match score",
+      "Keyword suggestions",
     ],
     notIncluded: [
-      'AI Bullet point rewrites',
-      'Tailored cover letters',
-      'Priority processing',
+      "AI Bullet point rewrites",
+      "Tailored cover letters",
+      "Priority processing",
     ],
-    cta: 'Get Started',
-    href: '/dashboard',
+    cta: "Get Started",
+    href: "/dashboard",
     highlight: false,
+    checkout: false,
   },
   {
-    name: 'Subscription',
-    price: '19',
-    description: 'Everything you need to land the job.',
+    id: "premium",
+    name: "Subscription",
+    price: "19",
+    description: "Everything you need to land the job.",
     features: [
-      'Unlimited analyses',
-      'AI Bullet point rewrites',
-      'Tailored cover letters',
-      'Missing skills detection',
-      'Formatting check',
+      "Unlimited analyses",
+      "AI Bullet point rewrites",
+      "Tailored cover letters",
+      "Missing skills detection",
+      "Formatting check",
     ],
     notIncluded: [],
-    cta: 'Start Subscription',
-    href: '/dashboard',
+    cta: "Start Subscription",
+    href: "#",
     highlight: true,
+    checkout: true,
   },
   {
-    name: 'Pay-per-Credit',
-    price: '5',
-    unit: '/ea',
-    description: 'No commitment, just results.',
+    id: "credit",
+    name: "Pay-per-Credit",
+    price: "5",
+    unit: "/ea",
+    description: "No commitment, just results.",
     features: [
-      '1 full optimization',
-      'AI Bullet point rewrites',
-      'Tailored cover letter',
-      'Lifetime access to result',
+      "1 full optimization",
+      "AI Bullet point rewrites",
+      "Tailored cover letter",
+      "Lifetime access to result",
     ],
     notIncluded: [],
-    cta: 'Buy Credit',
-    href: '/dashboard',
+    cta: "Buy Credit",
+    href: "#",
     highlight: false,
+    checkout: true,
   },
 ];
 
 export default function Pricing() {
+  const { isSignedIn } = useUser();
+  const router = useRouter();
+  const [loading, setLoading] = useState<string | null>(null);
+
+  const handleCheckout = async (plan: "premium" | "credit") => {
+    if (!isSignedIn) {
+      router.push("/sign-in?redirect_url=/pricing");
+      return;
+    }
+
+    setLoading(plan);
+
+    try {
+      const response = await fetch("/api/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ plan }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        console.error("Checkout error:", data.error);
+        alert("Something went wrong. Please try again.");
+        return;
+      }
+
+      if (data.url) {
+        window.location.href = data.url;
+      }
+    } catch (error) {
+      console.error("Checkout fetch error:", error);
+      alert("Network error. Please try again.");
+    } finally {
+      setLoading(null);
+    }
+  };
+
   return (
     <main className="min-h-screen bg-slate-50">
       {/* Navigation */}
@@ -73,7 +122,7 @@ export default function Pricing() {
               href="/dashboard"
               className="rounded-lg bg-indigo-600 px-5 py-2.5 text-sm font-bold text-white hover:bg-indigo-700 transition-all shadow-md shadow-indigo-100"
             >
-              Get Started
+              {isSignedIn ? "Dashboard" : "Get Started"}
             </Link>
           </div>
         </nav>
@@ -135,16 +184,40 @@ export default function Pricing() {
                 ))}
               </ul>
 
-              <Link
-                href={plan.href}
-                className={`block w-full py-4 text-center font-bold rounded-xl transition-all ${
-                  plan.highlight
-                    ? 'bg-indigo-600 text-white hover:bg-indigo-700 shadow-lg shadow-indigo-200'
-                    : 'bg-white border border-slate-200 text-slate-700 hover:border-indigo-600 hover:text-indigo-600'
-                }`}
-              >
-                {plan.cta}
-              </Link>
+              {plan.checkout ? (
+                <button
+                  onClick={() => handleCheckout(plan.id as "premium" | "credit")}
+                  disabled={loading === plan.id}
+                  className={`w-full py-4 text-center font-bold rounded-xl transition-all ${
+                    plan.highlight
+                      ? 'bg-indigo-600 text-white hover:bg-indigo-700 shadow-lg shadow-indigo-200'
+                      : 'bg-white border border-slate-200 text-slate-700 hover:border-indigo-600 hover:text-indigo-600'
+                  } disabled:opacity-50 disabled:cursor-not-allowed`}
+                >
+                  {loading === plan.id ? (
+                    <span className="flex items-center justify-center gap-2">
+                      <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24" fill="none">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                      </svg>
+                      Processing...
+                    </span>
+                  ) : (
+                    plan.cta
+                  )}
+                </button>
+              ) : (
+                <Link
+                  href={plan.href}
+                  className={`block w-full py-4 text-center font-bold rounded-xl transition-all ${
+                    plan.highlight
+                      ? 'bg-indigo-600 text-white hover:bg-indigo-700 shadow-lg shadow-indigo-200'
+                      : 'bg-white border border-slate-200 text-slate-700 hover:border-indigo-600 hover:text-indigo-600'
+                  }`}
+                >
+                  {plan.cta}
+                </Link>
+              )}
             </div>
           ))}
         </div>
