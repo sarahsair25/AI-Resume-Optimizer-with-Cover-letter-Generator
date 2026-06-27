@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Sidebar from './Sidebar';
+import ReferralModal from './ReferralModal';
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -7,9 +8,17 @@ interface DashboardLayoutProps {
 }
 
 export const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children, pageTitle }) => {
+  const [isReferralOpen, setIsReferralOpen] = useState(false);
+
+  useEffect(() => {
+    const handleOpenReferral = () => setIsReferralOpen(true);
+    window.addEventListener('open-referral-modal', handleOpenReferral);
+    return () => window.removeEventListener('open-referral-modal', handleOpenReferral);
+  }, []);
+
   return (
     <div className="min-h-screen bg-slate-50">
-      <Sidebar />
+      <Sidebar onReferClick={() => setIsReferralOpen(true)} />
       
       <main className="pl-64">
         <header className="h-20 bg-white border-b border-slate-200 flex items-center justify-between px-10 sticky top-0 z-10">
@@ -32,6 +41,8 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children, page
           {children}
         </div>
       </main>
+
+      <ReferralModal isOpen={isReferralOpen} onClose={() => setIsReferralOpen(false)} />
     </div>
   );
 };
