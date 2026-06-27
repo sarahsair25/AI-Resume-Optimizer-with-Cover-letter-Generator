@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Sidebar from './Sidebar';
 import ReferralModal from './ReferralModal';
-import BrowserExtension from './BrowserExtension';
+import { BrowserExtension } from './BrowserExtension';
 
 interface DashboardLayoutProps {
   children: React.ReactNode;

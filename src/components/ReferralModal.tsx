@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Share2, Copy, Check, X, Gift, Send, User, Mail } from 'lucide-react';
+import { captureEvent } from '@/lib/analytics';
 
 interface ReferralModalProps {
   isOpen: boolean;
@@ -13,10 +14,28 @@ export default function ReferralModal({ isOpen, onClose, referralCode = "RESUMAT
   const [copied, setCopied] = useState(false);
   const referralLink = `https://resumatch-ai.com/signup?ref=${referralCode}`;
 
+  useEffect(() => {
+    if (isOpen) {
+      captureEvent('referral_modal_opened');
+    }
+  }, [isOpen]);
+
   const copyToClipboard = () => {
     navigator.clipboard.writeText(referralLink);
     setCopied(true);
+    captureEvent('referral_link_copied', { referralCode });
     setTimeout(() => setCopied(false), 2000);
+  };
+
+  const handleShare = (platform: string) => {
+    captureEvent('referral_share_clicked', { platform, referralCode });
+    // In a real app, these would open share dialogs
+    console.log(`Sharing on ${platform}`);
+  };
+
+  const handleClose = () => {
+    captureEvent('referral_modal_closed');
+    onClose();
   };
 
   if (!isOpen) return null;
@@ -29,7 +48,7 @@ export default function ReferralModal({ isOpen, onClose, referralCode = "RESUMAT
       >
         {/* Close Button */}
         <button 
-          onClick={onClose}
+          onClick={handleClose}
           className="absolute top-4 right-4 p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-full transition-all z-10"
         >
           <X size={20} />
@@ -70,19 +89,28 @@ export default function ReferralModal({ isOpen, onClose, referralCode = "RESUMAT
             </div>
 
             <div className="grid grid-cols-3 gap-3">
-              <button className="flex flex-col items-center gap-2 p-4 rounded-2xl border border-slate-100 hover:border-indigo-200 hover:bg-indigo-50/30 transition-all group">
+              <button 
+                onClick={() => handleShare('Twitter')}
+                className="flex flex-col items-center gap-2 p-4 rounded-2xl border border-slate-100 hover:border-indigo-200 hover:bg-indigo-50/30 transition-all group"
+              >
                 <div className="w-10 h-10 bg-sky-100 rounded-full flex items-center justify-center text-sky-600 group-hover:scale-110 transition-transform">
                   <Send size={20} fill="currentColor" />
                 </div>
                 <span className="text-xs font-bold text-slate-600">Twitter</span>
               </button>
-              <button className="flex flex-col items-center gap-2 p-4 rounded-2xl border border-slate-100 hover:border-indigo-200 hover:bg-indigo-50/30 transition-all group">
+              <button 
+                onClick={() => handleShare('LinkedIn')}
+                className="flex flex-col items-center gap-2 p-4 rounded-2xl border border-slate-100 hover:border-indigo-200 hover:bg-indigo-50/30 transition-all group"
+              >
                 <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center text-blue-700 group-hover:scale-110 transition-transform">
                   <User size={20} fill="currentColor" />
                 </div>
                 <span className="text-xs font-bold text-slate-600">LinkedIn</span>
               </button>
-              <button className="flex flex-col items-center gap-2 p-4 rounded-2xl border border-slate-100 hover:border-indigo-200 hover:bg-indigo-50/30 transition-all group">
+              <button 
+                onClick={() => handleShare('Email')}
+                className="flex flex-col items-center gap-2 p-4 rounded-2xl border border-slate-100 hover:border-indigo-200 hover:bg-indigo-50/30 transition-all group"
+              >
                 <div className="w-10 h-10 bg-slate-100 rounded-full flex items-center justify-center text-slate-600 group-hover:scale-110 transition-transform">
                   <Mail size={20} />
                 </div>

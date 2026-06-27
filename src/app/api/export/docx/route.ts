@@ -8,6 +8,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 import { generateDocx, type ResumeData } from "@/lib/export-resume";
+import { inngest } from "@/lib/inngest-client";
+import { redis } from "@/lib/redis";
+import crypto from "crypto";
 
 export async function POST(req: NextRequest) {
   try {
@@ -24,6 +27,29 @@ export async function POST(req: NextRequest) {
         { error: "Missing required fields: name, email, summary" },
         { status: 400 }
       );
+    }
+
+    // Check if user requested async processing (background job)
+    const url = new URL(req.url);
+    const isAsync = url.searchParams.get("async") === "true";
+
+    if (isAsync) {
+      const jobId = crypto.randomUUID();
+      
+      // Initialize job status in Redis
+      await redis.set(`export:${jobId}`, {
+        status: "processing",
+        type: "docx",
+        timestamp: Date.now(),
+      }, { ex: 3600 });
+
+      // Trigger background job via Inngest
+      await inngest.send({
+        name: "app/export.docx.requested",
+        data: { data, jobId },
+      });
+
+      return NextResponse.json({ jobId, status: "processing" });
     }
 
     const docxBuffer = await generateDocx(data);
