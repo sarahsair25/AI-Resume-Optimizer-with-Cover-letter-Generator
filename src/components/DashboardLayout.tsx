@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Sidebar from './Sidebar';
 import ReferralModal from './ReferralModal';
-import BrowserExtension from './BrowserExtension';
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -44,7 +43,6 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children, page
       </main>
 
       <ReferralModal isOpen={isReferralOpen} onClose={() => setIsReferralOpen(false)} />
-      <BrowserExtension />
     </div>
   );
 };
