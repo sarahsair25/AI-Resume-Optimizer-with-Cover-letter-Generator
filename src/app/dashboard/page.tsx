@@ -88,6 +88,14 @@ export default function Dashboard() {
       
       setAnalysisResult(result);
       setStep("result");
+
+      // Referral system trigger: track number of analyses
+      const analysisCount = parseInt(localStorage.getItem("resumatch_analysis_count") || "0") + 1;
+      localStorage.setItem("resumatch_analysis_count", analysisCount.toString());
+
+      if (analysisCount === 3) {
+        window.dispatchEvent(new CustomEvent('open-referral-modal'));
+      }
     } catch (err) {
       setError("Analysis failed. Please try again.");
       console.error(err);

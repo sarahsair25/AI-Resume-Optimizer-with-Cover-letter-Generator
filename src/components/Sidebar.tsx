@@ -8,7 +8,11 @@ const navItems = [
   { label: "Settings", icon: "⚙️", href: "/dashboard/settings" },
 ];
 
-export const Sidebar: React.FC = () => {
+interface SidebarProps {
+  onReferClick?: () => void;
+}
+
+export const Sidebar: React.FC<SidebarProps> = ({ onReferClick }) => {
   return (
     <aside className="w-64 h-screen bg-slate-900 text-white flex flex-col fixed left-0 top-0 z-20">
       <div className="p-6">
@@ -32,6 +36,13 @@ export const Sidebar: React.FC = () => {
               <span className="font-medium">{item.label}</span>
             </Link>
           ))}
+          <button
+            onClick={onReferClick}
+            className="w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-colors text-slate-400 hover:bg-slate-800 hover:text-white text-left"
+          >
+            <span className="text-lg">🎁</span>
+            <span className="font-medium">Refer & Earn</span>
+          </button>
         </nav>
       </div>
 
