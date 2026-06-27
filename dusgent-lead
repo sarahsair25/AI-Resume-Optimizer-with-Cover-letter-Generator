@@ -1,0 +1,56 @@
+[33mcommit 0176f2d4866871bf4fca3f8b84a82363e0d13b40[m[33m ([m[1;32mmain[m[33m)[m
+Merge: 4905d04 b3804e6
+Author: Sarah Sair <sarahsair@gmail.com>
+Date:   Thu Jun 25 16:46:08 2026 -0500
+
+    Merge pull request #3 from sarahsair25/feature/production-seo-analytics
+    
+    Production Deployment & SEO Optimization
+
+[33mcommit b3804e6d0b99b6bff8e825cc1614cc871f7b36f3[m[33m ([m[1;31morigin/feature/production-seo-analytics[m[33m, [m[1;32mfeature/production-seo-analytics[m[33m)[m
+Author: Senior Software Engineer <engineer@resumatch.ai>
+Date:   Thu Jun 25 21:40:25 2026 +0000
+
+    Production deployment & SEO optimization
+    
+    - Add comprehensive metadata to root layout (Open Graph, Twitter, keywords, robots)
+    - Add page-specific metadata for landing, history, success/cancel pages
+    - Create sitemap.xml with route priorities and change frequencies
+    - Create robots.txt with crawl rules and sitemap reference
+    - Create dynamic OG image generator with brand styling
+    - Set up PostHog AnalyticsProvider (env-gated, works without key)
+    - Update next.config.js with security headers and production optimizations
+    - Update .env.example with full production configuration guidance
+    - Install missing lucide-react dependency
+
+[33mcommit 122ab364b2f5f84c28266a794b426a1edb918ac3[m
+Author: Senior Software Engineer <engineer@resumatch.ai>
+Date:   Thu Jun 25 21:25:36 2026 +0000
+
+    UI refinements for checkout and cover letter integration
+
+[33mcommit 4905d04f864d6c0e2e0df34e6ad8b65a1e29bb7f[m
+Merge: 0117a88 85ffa63
+Author: cto-new[bot] <140088366+cto-new[bot]@users.noreply.github.com>
+Date:   Thu Jun 25 21:24:58 2026 +0000
+
+    Implement Stripe Integration & Credit System
+    
+    Implement Stripe Integration & Credit System
+
+[33mcommit 85ffa63ab05db1d8ac7c26d7acada20113219229[m[33m ([m[1;31morigin/feature/stripe-credit-system[m[33m, [m[1;32mfeature/stripe-credit-system[m[33m)[m
+Author: Senior Software Engineer <engineer@resumatch.ai>
+Date:   Thu Jun 25 21:17:32 2026 +0000
+
+    Implement Stripe integration & credit system
+    
+    - Add Stripe service (src/lib/stripe.ts) with live + stub mode support
+    - Add payments table to DB schema for tracking transactions
+    - Create POST /api/checkout endpoint for checkout session creation
+    - Create GET /api/checkout/stub-complete for stub mode redirects
+    - Create POST /api/webhook for processing Stripe events
+    - Create GET|POST /api/user/credits for credit balance & usage
+    - Update pricing page to client component with checkout API integration
+    - Add checkout success/cancel pages
+    - Update middleware to expose /api/webhook publicly
+    - Update .env.example with Stripe configuration placeholders
