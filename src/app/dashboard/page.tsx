@@ -7,12 +7,15 @@ import JobDescriptionInput from "@/components/JobDescriptionInput";
 import MatchScore from "@/components/MatchScore";
 import BulletRewriter from "@/components/BulletRewriter";
 import CoverLetterGenerator from "@/components/CoverLetterGenerator";
+import ExportButtons from "@/components/ExportButtons";
 import { AnalysisResponse, UploadResponse, ParseResponse } from "@/types/api";
 
 import TestimonialRequest from "@/components/TestimonialRequest";
 
+import JobMatches from "@/components/JobMatches";
+
 export default function Dashboard() {
-  const [activeTab, setActiveTab] = useState<"optimizer" | "cover-letter">("optimizer");
+  const [activeTab, setActiveTab] = useState<"optimizer" | "cover-letter" | "job-matches">("optimizer");
   const [resumeBullets, setResumeBullets] = useState<string[]>([]);
   const [resumeText, setResumeText] = useState("");
   const [resumeId, setResumeId] = useState("");
@@ -184,12 +187,37 @@ export default function Dashboard() {
               >
                 Cover Letter
               </button>
+              <button 
+                onClick={() => setActiveTab("job-matches")}
+                className={`px-4 py-2 text-sm font-bold rounded-lg transition-all ${activeTab === "job-matches" ? "bg-white text-indigo-600 shadow-sm" : "text-slate-500 hover:text-slate-700"}`}
+              >
+                Job Matches
+              </button>
             </div>
             
-            <div className="flex gap-3">
-              <button className="px-4 py-2 border border-slate-200 rounded-lg text-sm font-bold text-slate-600 hover:bg-white transition-colors">Download PDF</button>
-              <button className="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-bold hover:bg-indigo-700 transition-colors shadow-lg shadow-indigo-100">Apply Improvements</button>
-            </div>
+            <ExportButtons
+              resumeData={{
+                name: "Your Name",
+                email: "email@example.com",
+                summary: analysisResult?.summary || "Professional with experience matching the target role.",
+                skills: [...(analysisResult?.matchedKeywords || []), ...(analysisResult?.missingKeywords || [])],
+                experience: [
+                  {
+                    title: "Professional Experience",
+                    company: "Current/Most Recent Position",
+                    dates: "Present",
+                    bullets: analysisResult?.bulletRewrites?.map(r => r.improved) || resumeBullets.length > 0 ? resumeBullets : ["Experience details from your resume"],
+                  },
+                ],
+                education: [
+                  {
+                    degree: "Degree",
+                    institution: "Institution",
+                    dates: "",
+                  },
+                ],
+              }}
+            />
           </div>
 
           {activeTab === "optimizer" ? (
@@ -245,9 +273,13 @@ export default function Dashboard() {
                 </div>
               </div>
             </div>
-          ) : (
+          ) : activeTab === "cover-letter" ? (
             <div className="max-w-4xl mx-auto">
               <CoverLetterGenerator resumeText={resumeText} jobDescription={jobDescription} />
+            </div>
+          ) : (
+            <div className="max-w-5xl mx-auto">
+              <JobMatches />
             </div>
           )}
 
