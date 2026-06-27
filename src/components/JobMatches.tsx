@@ -39,6 +39,24 @@ const MOCK_JOBS: JobMatch[] = [
     matchScore: 76,
     highlights: ['User-centric mindset', 'Proficiency in frontend performance'],
   },
+  {
+    id: '4',
+    title: 'Software Engineer II',
+    company: 'CloudNative Solutions',
+    location: 'Seattle, WA',
+    type: 'Full-time',
+    matchScore: 68,
+    highlights: ['Experience with Docker & Kubernetes', 'Strong problem-solving skills'],
+  },
+  {
+    id: '5',
+    title: 'Frontend Lead',
+    company: 'Stellar UX',
+    location: 'Remote',
+    type: 'Contract',
+    matchScore: 91,
+    highlights: ['Leadership experience', 'Deep understanding of Web Accessibility', 'Advanced React state management'],
+  },
 ];
 
 export default function JobMatches() {
