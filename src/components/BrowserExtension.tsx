@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   X,
   Sparkles,
@@ -13,6 +13,7 @@ import {
   ChevronDown,
   ExternalLink,
 } from 'lucide-react';
+import { analytics } from '@/lib/analytics';
 
 // Mock data simulating what the extension would detect from a job board page
 const MOCK_JOB_DATA = {
@@ -43,6 +44,17 @@ export const BrowserExtension: React.FC<BrowserExtensionProps> = ({
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
+
+  // Track opening events
+  useEffect(() => {
+    if (isOpen) {
+      analytics.capture('extension_opened', {
+        jobTitle: jobData.title,
+        jobCompany: jobData.company,
+        score: jobData.score
+      });
+    }
+  }, [isOpen, jobData]);
 
   const getScoreRingColor = (score: number): string => {
     if (score >= 80) return 'stroke-emerald-500';
@@ -239,11 +251,17 @@ export const BrowserExtension: React.FC<BrowserExtensionProps> = ({
 
             {/* Action CTAs */}
             <div className="space-y-2.5">
-              <button className="w-full py-3 bg-indigo-600 text-white text-sm font-bold rounded-xl hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-100 flex items-center justify-center gap-2 active:scale-[0.98]">
+              <button 
+                onClick={() => analytics.capture('extension_tailor_clicked')}
+                className="w-full py-3 bg-indigo-600 text-white text-sm font-bold rounded-xl hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-100 flex items-center justify-center gap-2 active:scale-[0.98]"
+              >
                 <Zap size={16} />
                 Tailor Resume for this Job
               </button>
-              <button className="w-full py-3 bg-white text-indigo-600 text-sm font-bold rounded-xl border border-indigo-200 hover:bg-indigo-50 transition-all flex items-center justify-center gap-2 active:scale-[0.98]">
+              <button 
+                onClick={() => analytics.capture('extension_cover_letter_clicked')}
+                className="w-full py-3 bg-white text-indigo-600 text-sm font-bold rounded-xl border border-indigo-200 hover:bg-indigo-50 transition-all flex items-center justify-center gap-2 active:scale-[0.98]"
+              >
                 <FileText size={16} />
                 Generate Cover Letter
               </button>
@@ -296,7 +314,10 @@ export const BrowserExtension: React.FC<BrowserExtensionProps> = ({
                   <p className="text-xs text-indigo-200 mb-4 leading-relaxed">
                     Get unlimited analyses, priority support, and real-time job matching.
                   </p>
-                  <button className="px-5 py-2.5 bg-white text-indigo-700 text-sm font-bold rounded-xl hover:bg-indigo-50 transition-all shadow-lg active:scale-[0.98]">
+                  <button 
+                    onClick={() => analytics.capture('extension_upgrade_clicked')}
+                    className="px-5 py-2.5 bg-white text-indigo-700 text-sm font-bold rounded-xl hover:bg-indigo-50 transition-all shadow-lg active:scale-[0.98]"
+                  >
                     Upgrade to Premium — $19/mo
                   </button>
                 </div>
@@ -309,6 +330,7 @@ export const BrowserExtension: React.FC<BrowserExtensionProps> = ({
             {/* Link to dashboard */}
             <a
               href="/dashboard"
+              onClick={() => analytics.capture('extension_dashboard_link_clicked')}
               className="flex items-center justify-center gap-1.5 text-xs text-slate-400 hover:text-indigo-600 font-medium transition-colors py-1"
             >
               View full analysis in Dashboard

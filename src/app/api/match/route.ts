@@ -21,6 +21,11 @@ import { NextRequest, NextResponse } from "next/server";
 import { analyzeResume } from "@/services/llm-service";
 import { fullAnalysis } from "@/services/ats-matcher";
 import { saveAnalysis, memoryDb } from "@/lib/db";
+import { redis } from "@/lib/redis";
+import crypto from "crypto";
+
+// Cache TTL: 24 hours
+const CACHE_TTL = 24 * 60 * 60;
 
 export async function POST(request: NextRequest) {
   try {
@@ -39,6 +44,25 @@ export async function POST(request: NextRequest) {
         { error: "Both resume and job description must be at least 10 characters" },
         { status: 400 }
       );
+    }
+
+    // Generate cache key based on a hash of resume and job description
+    const hash = crypto
+      .createHash("md5")
+      .update(`${resumeText.slice(0, 3000)}-${jobDescription.slice(0, 2000)}`)
+      .digest("hex");
+    const cacheKey = `analysis:${hash}`;
+
+    // Try to get from Redis cache first
+    try {
+      const cachedResult = await redis.get(cacheKey);
+      if (cachedResult) {
+        console.log("Serving analysis from cache:", cacheKey);
+        return NextResponse.json(cachedResult);
+      }
+    } catch (cacheError) {
+      console.error("Redis cache read error:", cacheError);
+      // Continue to fresh analysis if cache fails
     }
 
     // Try AI-powered analysis first, fall back to local NLP
@@ -60,23 +84,20 @@ export async function POST(request: NextRequest) {
       summary: result.summary,
     });
 
-    // Fallback: save to in-memory store
-    const fallbackId = analysisId ?? memoryDb.saveAnalysis({
-      resumeId: resumeId ?? "anonymous",
-      jobDescription: jobDescription.slice(0, 2000),
-      score: result.score,
-      scoreBreakdown: result.scoreBreakdown,
-      matchedKeywords: result.matchedKeywords,
-      missingKeywords: result.missingKeywords,
-      missingSkills: result.missingSkills,
-      bulletRewrites: result.bulletRewrites,
-      summary: result.summary,
-    });
-
-    return NextResponse.json({
-      analysisId: analysisId ?? fallbackId,
+    const finalResponse = {
+      analysisId: analysisId ?? "fallback-" + Date.now(),
       ...result,
-    });
+    };
+
+    // Save to Redis cache with 24h TTL
+    try {
+      await redis.set(cacheKey, finalResponse, { ex: CACHE_TTL });
+      console.log("Cached analysis result:", cacheKey);
+    } catch (cacheError) {
+      console.error("Redis cache write error:", cacheError);
+    }
+
+    return NextResponse.json(finalResponse);
   } catch (error) {
     console.error("Match error:", error);
 

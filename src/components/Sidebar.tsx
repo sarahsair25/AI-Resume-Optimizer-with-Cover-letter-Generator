@@ -1,5 +1,6 @@
 import React from "react";
 import Link from "next/link";
+import { captureEvent } from "@/lib/analytics";
 
 const navItems = [
   { label: "Dashboard", icon: "🏠", href: "/dashboard" },
@@ -13,6 +14,11 @@ interface SidebarProps {
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({ onReferClick }) => {
+  const handleReferClick = () => {
+    captureEvent('sidebar_refer_clicked');
+    onReferClick?.();
+  };
+
   return (
     <aside className="w-64 h-screen bg-slate-900 text-white flex flex-col fixed left-0 top-0 z-20">
       <div className="p-6">
@@ -31,13 +37,14 @@ export const Sidebar: React.FC<SidebarProps> = ({ onReferClick }) => {
               key={item.label}
               href={item.href}
               className="flex items-center gap-3 px-4 py-3 rounded-xl transition-colors text-slate-400 hover:bg-slate-800 hover:text-white"
+              onClick={() => captureEvent('nav_item_clicked', { label: item.label })}
             >
               <span className="text-lg">{item.icon}</span>
               <span className="font-medium">{item.label}</span>
             </Link>
           ))}
           <button
-            onClick={onReferClick}
+            onClick={handleReferClick}
             className="w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-colors text-slate-400 hover:bg-slate-800 hover:text-white text-left"
           >
             <span className="text-lg">🎁</span>
@@ -57,6 +64,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ onReferClick }) => {
           <Link
             href="/pricing"
             className="block w-full py-2 bg-indigo-500 hover:bg-indigo-600 text-white text-xs font-bold rounded-lg transition-colors text-center"
+            onClick={() => captureEvent('upgrade_clicked', { source: 'sidebar' })}
           >
             Upgrade Now
           </Link>
